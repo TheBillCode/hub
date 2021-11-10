@@ -1,0 +1,79 @@
+version: "3"
+
+services:
+  crontabui:
+    image: plantstudio/crontabui
+    ports:
+      - "8888:8000"    
+    volumes:
+      - cron:/etc/crontabs
+    links:
+      - fastapi
+
+  grafana:
+    image: grafana/grafana:8.2.1
+    ports:
+      - "3000:3000"
+    depends_on: 
+      - influxdb
+    links:
+      - influxdb
+      - fastapi
+
+  influxdb:
+    image: influxdb:1.8
+    ports:
+      - "8086:8086"
+    volumes:
+      - influxdb:/var/lib/influxdb
+
+  couchdb:
+    image: treehouses/couchdb:2.3.0
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password
+    ports:
+      - "5984:5984"
+    volumes:
+      - couchdb:/opt/couchdb/data
+
+  fastapi:
+    image: plantstudio/fastapi
+    ports:
+      - "80:80"
+      - "88:88"
+    links:
+      - couchdb
+      - influxdb
+    depends_on:
+      - couchdb
+      - influxdb
+
+  mosquitto:
+    image: plantstudio/mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - mosquitto:/mosquitto
+
+  paho:
+    image: plantstudio/paho
+    depends_on:
+      - mosquitto
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    ports:
+      - "9000:9000"
+      - "8000:8000"
+      - "9433:9433"
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+volumes:
+  cron:
+  influxdb:
+  couchdb:
+  mosquitto:
+  portainer_data:
