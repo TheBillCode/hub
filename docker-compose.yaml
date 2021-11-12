@@ -3,6 +3,7 @@ version: "3"
 services:
   crontabui:
     image: plantstudio/crontabui
+    restart: unless-stopped
     ports:
       - "8888:8000"    
     volumes:
@@ -12,6 +13,7 @@ services:
 
   grafana:
     image: grafana/grafana:8.2.1
+    restart: unless-stopped
     ports:
       - "3000:3000"
     depends_on: 
@@ -22,6 +24,7 @@ services:
 
   influxdb:
     image: influxdb:1.8
+    restart: unless-stopped
     ports:
       - "8086:8086"
     volumes:
@@ -29,6 +32,7 @@ services:
 
   couchdb:
     image: treehouses/couchdb:2.3.0
+    restart: unless-stopped
     environment:
       - COUCHDB_USER=admin
       - COUCHDB_PASSWORD=password
@@ -39,6 +43,7 @@ services:
 
   fastapi:
     image: plantstudio/fastapi
+    restart: unless-stopped
     ports:
       - "80:80"
       - "88:88"
@@ -51,18 +56,23 @@ services:
 
   mosquitto:
     image: plantstudio/mosquitto
+    restart: unless-stopped
     ports:
       - "1883:1883"
     volumes:
-      - mosquitto:/mosquitto
+      - mosquitto_conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
 
   paho:
     image: plantstudio/paho
+    restart: unless-stopped
     depends_on:
       - mosquitto
 
   portainer:
     image: portainer/portainer-ce:latest
+    restart: unless-stopped
     ports:
       - "9000:9000"
       - "8000:8000"
@@ -75,5 +85,7 @@ volumes:
   cron:
   influxdb:
   couchdb:
-  mosquitto:
+  mosquitto_conf:
+  mosquitto_data:
+  mosquitto_log:
   portainer_data:
