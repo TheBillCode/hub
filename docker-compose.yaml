@@ -31,18 +31,15 @@ services:
       - influxdb:/var/lib/influxdb
 
   couchdb:
-    image: treehouses/couchdb:2.3.0
+    image: plantstudio/couchdb
     restart: unless-stopped
-    environment:
-      - COUCHDB_USER=admin
-      - COUCHDB_PASSWORD=password
     ports:
       - "5984:5984"
     volumes:
       - couchdb:/opt/couchdb/data
 
   fastapi:
-    image: plantstudio/fastapi
+    build: fastapi
     restart: unless-stopped
     ports:
       - "80:80"
@@ -64,10 +61,21 @@ services:
       - mosquitto_log:/mosquitto/log
 
   paho:
-    image: plantstudio/paho
+    build: paho
     restart: unless-stopped
     depends_on:
       - mosquitto
+
+  psconfig:
+    build: plantstudio/psconfig
+    ports:
+      - "222:22"
+    depends_on: 
+      - fastapi
+      - paho
+      - couchdb
+      - grafana
+
 
   portainer:
     image: portainer/portainer-ce:latest
