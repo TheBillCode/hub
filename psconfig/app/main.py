@@ -1,9 +1,11 @@
+import time
 import couchdb2
 import requests
 from influxdb import InfluxDBClient
-
+time.sleep(40)
 ###  CouchDB ###
-server = couchdb2.Server(href="http://couchdb:5984/", username=None, password=None, use_session=True, ca_file=None)
+server = couchdb2.Server(href="http://couchdb:5984/", username="admin", password="password", use_session=True, ca_file=None)
+db = server.create("plantstudio")
 db = server["plantstudio"]
 
 studioVars = {

@@ -33,8 +33,11 @@ services:
       - influxdb:/var/lib/influxdb
 
   couchdb:
-    image: plantstudio/couchdb
+    image: treehouses/couchdb:2.3.0
     restart: unless-stopped
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=password    
     ports:
       - "5984:5984"
     volumes:
