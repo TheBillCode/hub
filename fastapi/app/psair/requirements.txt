@@ -1,0 +1,5 @@
+requests==2.26.0
+pyserial==3.5
+rpi-gpio-devices==1.0.0
+python-crontab==2.6.0
+time2relax==0.6.0
