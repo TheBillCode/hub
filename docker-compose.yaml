@@ -17,7 +17,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./grafana/provisioning:/etc/grafana/provisioning  
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - grafana_storage:/var/lib/grafana  
     depends_on: 
       - influxdb
     links:
@@ -101,3 +102,4 @@ volumes:
   mosquitto_data:
   mosquitto_log:
   portainer_data:
+  grafana_storage:
