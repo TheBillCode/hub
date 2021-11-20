@@ -71,6 +71,9 @@ services:
     restart: unless-stopped
     depends_on:
       - mosquitto
+    volumes:
+      - /home/pi/hub/paho/app:/code/app
+    tty: true    
 
   psconfig:
     build: psconfig

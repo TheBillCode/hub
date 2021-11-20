@@ -62,6 +62,7 @@ def fertigate(plant,weight):
 def on_message(client, userdata, msg):
 #    m = (msg.payload.decode("utf-8"))
 #    data = json.loads(m)
+    print('message')
     if msg.topic =='tele/esp4/SENSOR':
         data = decode(msg)
         temp = data["AM2301"]["Temperature"]
