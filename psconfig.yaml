@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  psconfig:
+    build: psconfig
+    ports:
+      - "222:22"
+      - "888:80"
+    tty: true
+    volumes:
+      - /home/pi/hub/psconfig:/code
+      - /home/pi/hub/mypipe:/hostpipe  
+
+    

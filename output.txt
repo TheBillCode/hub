@@ -1,0 +1,3 @@
+Stopping manage_psconfig_1 ... 
+[1A[2KStopping manage_psconfig_1 ... [32mdone[0m[1BRemoving manage_psconfig_1 ... 
+[1A[2KRemoving manage_psconfig_1 ... [32mdone[0m[1BRemoving network manage_default

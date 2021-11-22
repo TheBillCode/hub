@@ -1,3 +1,4 @@
 requests
 couchdb2
 influxdb
+Flask

@@ -16,7 +16,11 @@ COPY ./requirements.txt /code/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-COPY ./app /code/app
+#COPY /app /code
 
-CMD ["python","app/main.py"]
-#ENTRYPOINT ["tail", "-f", "/dev/null"]
+RUN export FLASK_APP=hello
+
+VOLUME /hostpipe
+
+#CMD ["python","app/main.py"]
+ENTRYPOINT ["tail", "-f", "/dev/null"]

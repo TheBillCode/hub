@@ -75,17 +75,6 @@ services:
       - /home/pi/hub/paho/app:/code/app
     tty: true    
 
-  psconfig:
-    build: psconfig
-    ports:
-      - "222:22"
-    depends_on: 
-      - fastapi
-      - paho
-      - couchdb
-      - grafana
-
-
   portainer:
     image: portainer/portainer-ce:latest
     restart: unless-stopped
