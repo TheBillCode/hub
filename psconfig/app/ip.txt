@@ -1,2 +1,0 @@
-        inet 192.168.86.58  netmask 255.255.255.0  broadcast 192.168.86.255
-        inet6 fe80::9538:973f:7e24:e2ed  prefixlen 64  scopeid 0x20<link>
