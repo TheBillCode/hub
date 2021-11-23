@@ -15,17 +15,24 @@
  # along with this program. If not, see <http://www.gnu.org/licenses/>.
  #
 import json
-#import urllib3
 import requests
 import re
-from time2relax import CouchDB
+#from time2relax import CouchDB
 import paho.mqtt.client as mqtt
+
+#define a list of keywords to populate influx with
+KEYWORDS = ["Temperature",
+            "Humidity",
+            "CarbonDioxide",
+            "Power",
+            "Weight",
+            "Today"]
 
 #http = urllib3.PoolManager()
 # Use CouchDB for storing all Studio vars
-ps=CouchDB('http://couchdb:5984/plantstudio')
+#ps=CouchDB('http://couchdb:5984/plantstudio')
 # Get germinate vars from couchdb
-germinateVars = ps.get('germinate').json()
+#germinateVars = ps.get('germinate').json()
 
 # InfluxDb config
 InfluxUrl = "http://influxdb:8086/write"
@@ -45,125 +52,79 @@ def decode(message):
     data = json.loads(m)
     return data
 
-def fertigate(plant,weight):
-    f = ps.get('fertigate').json()
-    if int(plant) == int(f['plantNumber']):
-        if float(weight) < float(f['lowWeight']):
-            if int(f['strike']) < int(f['strikeCount']):
-                f['strike'] = f['strike'] + 1
-                ps.insert(f) 
-            else:
-                client.publish('cmnd/fertigate/Power1', 'on')
-                f['fertigateCount'] += 1 
-                f['strike'] = 0
-                ps.insert(f)   
-    return "done"
+
+
+def controls(msg):
+    return
+    # this is commmented out because couch db isn't working on my end
+    # def fertigate(plant,weight):
+    #     f = ps.get('fertigate').json()
+    #     if int(plant) == int(f['plantNumber']):
+    #         if float(weight) < float(f['lowWeight']):
+    #             if int(f['strike']) < int(f['strikeCount']):
+    #                 f['strike'] = f['strike'] + 1
+    #                 ps.insert(f) 
+    #             else:
+    #                 client.publish('cmnd/fertigate/Power1', 'on')
+    #                 f['fertigateCount'] += 1 
+    #                 f['strike'] = 0
+    #                 ps.insert(f)   
+
+    # if msg.topic =='tele/gis/SENSOR':
+    #     global germinateVars
+    #     germinateVars = ps.get('germinate').json()
+    #     print(germinateVars['targetTemp'])
+    #     client.publish('tele/gis/val', germinateVars['targetTemp'])
+    # elif msg.topic =='tele/germinate/SENSOR':
+    #     data = decode(msg)
+    #     temp = data["DS18B20"]["Temperature"]
+    #     if temp < germinateVars['targetTemp']:
+    #         client.publish('cmnd/heatmat/Power1', 'on')
+    #     elif temp > germinateVars['targetTemp']:
+    #         client.publish('cmnd/heatmat/Power1', 'off') 
+    # elif re.search('tele/plant./SENSOR', msg.topic):
+    #     data = decode(msg)
+    #     weight = data["HX711"]["Weight"]
+    #     plant = re.search(r'\d+', msg.topic).group()
+    #     #if weight > 0 and weight < 120:
+    #     payload = "sensors,type=air Plant" + str(plant) + "Weight=" + str(weight)
+    #     InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
+    #     fertigate(plant,weight)      
+
 
 def on_message(client, userdata, msg):
-#    m = (msg.payload.decode("utf-8"))
-#    data = json.loads(m)
-    print('message')
-    if msg.topic =='tele/esp4/SENSOR':
-        data = decode(msg)
-        temp = data["AM2301"]["Temperature"]
-        humid = data["AM2301"]["Humidity"]
-        payload = "sensors,type=air OutsideTemp=" + str(temp) + ",OutsideHumidity=" + str(humid)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-    elif msg.topic == 'tele/mist/duration':
-        payload = "sensors,type=air MistDuration=" + str(decode(msg))
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-    elif msg.topic =='tele/seedling/SENSOR':
-        data = decode(msg)
-        temp = data["AM2301"]["Temperature"]
-        humid = data["AM2301"]["Humidity"]
-        payload = "sensors,type=air curingTemp2=" + str(temp) + ",curingHumidity2=" + str(humid)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-    elif msg.topic =='tele/bme280_1/SENSOR':
-        data = decode(msg)
-        temp = data["BME280"]["Temperature"]
-        humid = data["BME280"]["Humidity"]
-        humid = humid + 10 #compensate for low reading
-        payload = "sensors,type=air BME1Temp=" + str(temp) + ",BME1Humidity=" + str(humid)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)     
-    elif msg.topic =='tele/heater/SENSOR':
-        data = decode(msg)
-        watts = data["ENERGY"]["Power"]
-        payload = "sensors,type=air HeaterWatts=" + str(watts)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-    elif msg.topic =='tele/humidifier/SENSOR':
-        data = decode(msg)
-        watts = data["ENERGY"]["Power"]
-        payload = "sensors,type=air HumidifierWatts=" + str(watts)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)    
-    elif msg.topic =='tele/gis/SENSOR':
-        global germinateVars
-        germinateVars = ps.get('germinate').json()
-        print(germinateVars['targetTemp'])
-        client.publish('tele/gis/val', germinateVars['targetTemp'])
-    elif msg.topic =='tele/germinate/SENSOR':
-        data = decode(msg)
-        temp = data["DS18B20"]["Temperature"]
-        if temp < germinateVars['targetTemp']:
-            client.publish('cmnd/heatmat/Power1', 'on')
-        elif temp > germinateVars['targetTemp']:
-            client.publish('cmnd/heatmat/Power1', 'off') 
-        payload = "sensors,type=air GroundTemp=" + str(temp)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-    elif msg.topic =='tele/garage/SENSOR':
-        data = decode(msg)
-        temp = data["SHT3X-0x45"]["Temperature"]
-        humidity = data["SHT3X-0x45"]["Humidity"]
-        payload = "sensors,type=air curingTemp=" + str(temp) + ",curingHumidity=" + str(humidity)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-    elif msg.topic =='tele/light1/SENSOR':
-        data = decode(msg)
-        watts = data["ENERGY"]["Power"]
-        payload = "sensors,type=air Light1Watts=" + str(watts)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-    elif msg.topic =='tele/heatmat/SENSOR':
-        data = decode(msg)
-        watts = data["ENERGY"]["Power"]
-    elif msg.topic =='tele/light2/SENSOR':
-        data = decode(msg)
-        watts = data["ENERGY"]["Power"]
-        payload = "sensors,type=air Light2Watts=" + str(watts)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-    elif msg.topic =='tele/fan/SENSOR':
-        data = decode(msg)
-        watts = data["ENERGY"]["Power"]
-        payload = "sensors,type=air FanWatts=" + str(watts)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-    elif msg.topic =='tele/hyperfan/SENSOR':
-        data = decode(msg)
-        watts = data["ENERGY"]["Power"]
-        payload = "sensors,type=air HyperfanWatts=" + str(watts)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-    elif msg.topic =='tele/dehumidifier/SENSOR':
-        data = decode(msg)
-        watts = data["ENERGY"]["Power"]
-        wattsToday = data["ENERGY"]["Today"]
-        payload = "sensors,type=air DehumidifierWatts=" + str(watts) + ",DehumidifierWattsToday=" + str(wattsToday)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-    elif msg.topic =='tele/co2/SENSOR':
-        data = decode(msg)
-        watts = data["ENERGY"]["Power"]
-        payload = "sensors,type=air CO2Watts=" + str(watts)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-    elif msg.topic =='tele/roflood/SENSOR':
-        data = decode(msg)
-        counter = data["COUNTER"]["C1"]
-    elif re.search('tele/plant./SENSOR', msg.topic):
-        data = decode(msg)
-        weight = data["HX711"]["Weight"]
-        plant = re.search(r'\d+', msg.topic).group()
-#        if weight > 0 and weight < 120:
-        payload = "sensors,type=air Plant" + str(plant) + "Weight=" + str(weight)
-        InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-        fertigate(plant,weight)   
-#    elif msg.topic == 'tele/seedling/ALERT':
-#        r = http.request('GET', 'http://10.0.0.0:88/minisplit/power/on')
-#       result = r.status
-#       client.publish('cmnd/seedling/Rule1', 'off')
+    if "LWT" in msg.topic:
+        return
+    def get_keywords(data):
+        """Returns all key-value pairs where key is a KEYWORD using
+        recursion to iterate through all dictionaries in dictionoary
+        """
+        pairs = {}
+        for k,v in data.items():        
+            if isinstance(v, dict):
+                pairs = get_keywords(v)
+            else:   
+                if k in KEYWORDS:
+                    pairs[k] = v
+        return pairs         
+  
+    if "SENSOR" in msg.topic:
+        try:
+            pairs = dict()
+            topic = msg.topic.split("/") #tele/Device/Type
+            payload = topic[1] + ",type=" + topic[2] + " " #set topics
+            data = decode(msg)
+            pairs = get_keywords(data) 
+            
+            for k in pairs:
+                payload += k + "=" + str(pairs[k]) + ","
+            payload = payload[:-1]
+            InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
+        except Exception as e: print(e)
+    #uncomment if using controls
+    #controls(msg)
+    
+
 
 client = mqtt.Client()
 client.on_connect = on_connect
