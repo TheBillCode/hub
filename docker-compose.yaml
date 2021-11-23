@@ -75,17 +75,6 @@ services:
       - /home/pi/hub/paho/app:/code/app
     tty: true    
 
-  portainer:
-    image: portainer/portainer-ce:latest
-    restart: unless-stopped
-    ports:
-      - "9000:9000"
-      - "8000:8000"
-      - "9433:9433"
-    volumes: 
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-
 volumes:
   cron:
   influxdb:
@@ -93,5 +82,4 @@ volumes:
   mosquitto_conf:
   mosquitto_data:
   mosquitto_log:
-  portainer_data:
   grafana_storage:

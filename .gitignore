@@ -1,6 +1,8 @@
 .bash_history
 .bash_logout
 .bashrc
+.bash_aliases
 .python_history
 .wget-hsts
 .gitconfig
+output.txt

@@ -11,4 +11,18 @@ services:
       - /home/pi/hub/psconfig:/code
       - /home/pi/hub/mypipe:/hostpipe  
 
+  portainer:
+    image: portainer/portainer-ce:latest
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "8000:8000"
+      - "9433:9433"
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+volumes:
+  portainer_data:
+
     
