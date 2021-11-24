@@ -20,6 +20,5 @@ COPY /app /code
 
 VOLUME /hostpipe
 
-#CMD [./code/app/flask.sh]
-ENTRYPOINT ["tail", "-f", "/dev/null"]
-#ENTRYPOINT ["/code/app/flask.sh"]
+#ENTRYPOINT ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["python", "main.py"]

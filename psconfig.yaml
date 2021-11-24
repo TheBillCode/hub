@@ -28,6 +28,4 @@ networks:
       name: ps-net
 
 volumes:
-  portainer_data:
-
-    
+  portainer_data:    

@@ -7,7 +7,17 @@
     <link rel="stylesheet" href="/static/css/bulma.min.css">
   </head>
   <body>
-  <section class="section">
+    <section class="section">
+      <div class="container">
+          <h1 class="title is-2">Containers</h1>
+          <a href="http://{{hostIP}}:9000" class="button is-info" target="_blank">Portainer</a>
+          <a href="http://{{hostIP}}:3000" class="button is-info" target="_blank">Grafana</a>
+          <a href="http://{{hostIP}}:8888" class="button is-info" target="_blank">Scheduler</a>
+          <a href="http://{{hostIP}}" class="button is-info" target="_blank">FastAPI</a>
+          <a href="http://{{hostIP}}:5984/_utils" class="button is-info" target="_blank">CouchDB</a>
+      </div>
+    </section>
+    <section class="section">
     <div class="container">
         <h1 class="title is-2">Hub Manager</h1>
         <a href="/sh/hub_up" class="button is-primary">Hub Up</a>
