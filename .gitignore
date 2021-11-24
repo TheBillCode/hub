@@ -5,4 +5,5 @@
 .python_history
 .wget-hsts
 .gitconfig
+*.map
 output.txt
