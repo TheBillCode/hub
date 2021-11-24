@@ -75,6 +75,11 @@ services:
       - /home/pi/hub/paho/app:/code/app
     tty: true    
 
+networks: 
+  default: 
+    external: 
+      name: ps-net
+
 volumes:
   cron:
   influxdb:

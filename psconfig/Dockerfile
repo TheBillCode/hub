@@ -16,11 +16,10 @@ COPY ./requirements.txt /code/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-#COPY /app /code
-
-RUN export FLASK_APP=hello
+COPY /app /code
 
 VOLUME /hostpipe
 
-CMD ["flask","run","--host=0.0.0.0","--port=80","--reload"]
-#ENTRYPOINT ["tail", "-f", "/dev/null"]
+#CMD [./code/app/flask.sh]
+ENTRYPOINT ["tail", "-f", "/dev/null"]
+#ENTRYPOINT ["/code/app/flask.sh"]

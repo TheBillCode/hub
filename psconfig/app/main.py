@@ -2,7 +2,7 @@ import time
 import couchdb2
 import requests
 from influxdb import InfluxDBClient
-time.sleep(40)
+#time.sleep(40)
 ###  CouchDB ###
 server = couchdb2.Server(href="http://couchdb:5984/", username="admin", password="password", use_session=True, ca_file=None)
 db = server.create("plantstudio")
@@ -33,6 +33,6 @@ light = {
 db.put(light)
 
 ### InfluxDB ###
-client = InfluxDBClient(host='influxdb', port=8086)
-client.create_database('grow1')
+#client = InfluxDBClient(host='influxdb', port=8086)
+#client.create_database('grow1')
 
