@@ -11,5 +11,5 @@ mkfifo /home/pi/hub/mypipe
 sudo mv /home/pi/hub/ps-startup.service /etc/systemd/system/ps-startup.service
 chmod 664 /etc/systemd/system/host-ip.sh
 sudo systemctl daemon-reload
-sudo systemctl enable host-ip.service
+sudo systemctl enable ps-startup.service
 sudo reboot
