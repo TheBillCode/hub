@@ -1,4 +1,6 @@
 #!/bin/bash
+echo "Create ps-net docker network"
+docker network create ps-net
 echo "Starting PlantStudio Hub"
 docker-compose up -d
 echo "Starting PlantStudio Manager"
