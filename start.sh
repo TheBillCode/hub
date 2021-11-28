@@ -1,4 +1,5 @@
 #!/bin/bash
+/sbin/ip route|awk '/default/ { print $9 }' > /home/pi/hub/psconfig/app/host_ip
 echo "Create ps-net docker network"
 docker network create ps-net
 echo "Starting PlantStudio Hub"
