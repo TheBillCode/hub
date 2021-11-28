@@ -1,2 +1,2 @@
 #!/bin/bash
-echo 'docker-compose -f hub/docker-compose.yaml pull' > /hostpipe
+echo 'docker-compose -f docker-compose.yaml pull' > /hostpipe
