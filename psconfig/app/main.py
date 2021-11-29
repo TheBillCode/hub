@@ -51,11 +51,14 @@ def couch_init():
         "type": "Fluence SpydrX Plus"
     }
     db.put(light)
-    return('Configure Counchdb')
+    return('Configured CounchDB')
 
 ### InfluxDB ###
-#client = InfluxDBClient(host='influxdb', port=8086)
-#client.create_database('grow1')
-
+@app.route('/influxdb')
+def influxdb_init():
+    client = InfluxDBClient(host='influxdb', port=8086)
+    client.create_database('grow1')
+    return('Configured InfluxDB')
+    
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port="80", debug=True)
