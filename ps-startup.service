@@ -1,0 +1,8 @@
+[Unit]
+After=network.service
+
+[Service]
+ExecStart=/home/pi/hub/execpipe.sh
+
+[Install]
+WantedBy=default.target

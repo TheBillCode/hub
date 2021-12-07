@@ -1,2 +1,2 @@
-alias start= "./start.sh"
-alias stop== ".stop.sh"
+alias start= "/home/pi/hub/start.sh"
+alias stop== "/home/pi/hub/stop.sh"

@@ -6,7 +6,7 @@ RUN apt -y install nano
 
 RUN mkdir /code
 
-WORKDIR /code
+WORKDIR /code/app
 
 RUN wget http://ftp.us.debian.org/debian/pool/main/libs/libseccomp/libseccomp2_2.5.1-1_armhf.deb
 
@@ -16,11 +16,9 @@ COPY ./requirements.txt /code/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 
-#COPY /app /code
-
-RUN export FLASK_APP=hello
+COPY /app /code
 
 VOLUME /hostpipe
 
-#CMD ["python","app/main.py"]
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+#ENTRYPOINT ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["python", "main.py"]
