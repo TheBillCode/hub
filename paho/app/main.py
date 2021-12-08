@@ -20,14 +20,6 @@ from plantstudiolib import Room
 from plantstudiolib import Plantsudio as ps
 import sys, os
 
-#define a list of keywords to populate influx with
-KEYWORDS = ["Temperature",
-            "Humidity",
-            "CarbonDioxide",
-            "Power",
-            "Weight",
-            "Today"]
-
 #http = urllib3.PoolManager()
 # Use CouchDB for storing all Studio vars
 #ps=CouchDB('http://couchdb:5984/plantstudio')
@@ -53,7 +45,6 @@ def decode(message):
     return data
 
 #controls moving to plantstudiolib.py on next release
-
 def controls(msg):
     return
     # this is commmented out because couch db isn't working on my end
@@ -90,7 +81,6 @@ def controls(msg):
     #     payload = "sensors,type=air Plant" + str(plant) + "Weight=" + str(weight)
     #     InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
     #     fertigate(plant,weight)      
-
 
 def on_message(client, userdata, msg):
 
@@ -154,41 +144,6 @@ def on_message(client, userdata, msg):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         print(exc_type, fname, exc_tb.tb_lineno)
-
-
-
-def on_message(client, userdata, msg):
-    if "LWT" in msg.topic:
-        return
-    def get_keywords(data):
-        """Returns all key-value pairs where key is a KEYWORD using
-        recursion to iterate through all dictionaries in dictionoary
-        """
-        pairs = {}
-        for k,v in data.items():        
-            if isinstance(v, dict):
-                pairs = get_keywords(v)
-            else:   
-                if k in KEYWORDS:
-                    pairs[k] = v
-        return pairs         
-  
-    if "SENSOR" in msg.topic:
-        try:
-            pairs = dict()
-            topic = msg.topic.split("/") #tele/Device/Type
-            payload = topic[1] + ",type=" + topic[2] + " " #set topics
-            data = decode(msg)
-            pairs = get_keywords(data) 
-            
-            for k in pairs:
-                payload += k + "=" + str(pairs[k]) + ","
-            payload = payload[:-1]
-            InfluxResponse = requests.request("POST", InfluxUrl, data=payload, params=InfluxQueryString)
-        except Exception as e: print(e)
-    #uncomment if using controls
-    #controls(msg)
-
     
 
 
@@ -196,10 +151,4 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 client.connect("mosquitto", 1883, 60)
-
-# Blocking call that processes network traffic, dispatches callbacks and
-# handles reconnecting.
-# Other loop*() functions are available that give a threaded interface and a
-# manual interface.
-
 client.loop_forever()
